@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ผังโต๊ะจีน งานเกษียณ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#FFF3F8;
+    --bg2:#FDE6F1;
+    --paper:#FFFBFD;
+    --ink:#4A2338;
+    --ink-soft:#9C6B87;
+    --line:#F5D3E4;
+    --pink-50:#FFF0F7;
+    --pink-200:#FBCFE8;
+    --pink-400:#F472B6;
+    --pink-600:#DB2777;
+    --pink-700:#BE185D;
+    --pink-900:#7A0F3B;
+    --gold:#F5C451;
+    --green:#2F9E44;
+    --amber:#E8890C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:linear-gradient(180deg,var(--bg1),var(--bg2) 60%,var(--bg1));
+    font-family:'Sarabun',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px;}
+
+  header.top{text-align:center;padding:20px 12px 4px;}
+  header.top .eyebrow{font-family:'Kanit',sans-serif;font-weight:600;letter-spacing:.16em;font-size:12px;color:var(--pink-600);text-transform:uppercase;}
+  header.top h1{font-family:'Kanit',sans-serif;font-weight:800;font-size:clamp(24px,4.2vw,36px);margin:8px 0 6px;line-height:1.2;color:var(--pink-900);}
+  header.top h1 .accent{color:var(--pink-600);}
+  header.top p.sub{margin:0;color:var(--ink-soft);font-size:14px;}
+
+  .mode-bar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px 0 6px;}
+  .mode-pill{font-family:'Kanit',sans-serif;font-weight:600;font-size:12px;padding:6px 14px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;}
+  .mode-pill.dash{background:#F6E9F0;color:var(--ink-soft);}
+  .mode-pill.edit{background:#FDE0EC;color:var(--pink-700);}
+  .mode-bar button{font-family:'Kanit',sans-serif;font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink);}
+  .mode-bar button:hover{background:var(--pink-50);}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0 10px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .stats.admin-stats{max-width:900px;}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 14px;text-align:center;}
+  .stat .num{font-family:'Kanit',sans-serif;font-weight:700;font-size:24px;color:var(--pink-700);}
+  .stat .lbl{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .stat.paid .num{color:var(--green);}
+  .stat.pending .num{color:var(--amber);}
+  .stat.money .num{color:var(--pink-600);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:6px 0 20px;font-size:13px;color:var(--ink-soft);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:12px;height:12px;border-radius:4px;display:inline-block;border:1.5px solid var(--line);}
+  .dot.open{background:#fff;}
+  .dot.booked{background:var(--pink-200);border-color:var(--pink-400);}
+  .dot.pending{background:var(--pink-50);border-color:var(--pink-400);}
+  .dot.paid{background:var(--pink-600);border-color:var(--pink-700);}
+  .dot.vip{background:#FBE4EE;border-color:var(--pink-900);}
+
+  .venue{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px 18px 32px;position:relative;overflow:hidden;}
+
+  .stage-wrap{max-width:520px;margin:0 auto 26px;position:relative;}
+  .stage-curtain{
+    background:radial-gradient(120% 160% at 50% -20%, #C2447A 0%, var(--pink-900) 65%);
+    border-radius:20px 20px 8px 8px;padding:22px 20px 16px;
+    box-shadow:0 14px 30px rgba(122,15,59,.25);position:relative;overflow:hidden;
+  }
+  .stage-curtain::before, .stage-curtain::after{
+    content:"";position:absolute;top:-30%;width:70%;height:160%;
+    background:radial-gradient(circle, rgba(255,255,255,.10), transparent 60%);
+  }
+  .stage-curtain::before{left:-20%;}
+  .stage-curtain::after{right:-20%;}
+  .stage-lights{display:flex;justify-content:center;gap:10px;margin-bottom:10px;position:relative;z-index:1;}
+  .stage-lights span{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px 3px rgba(245,196,81,.7);}
+  .stage-title{font-family:'Kanit',sans-serif;color:#fff;text-align:center;letter-spacing:.3em;font-size:13px;font-weight:700;text-transform:uppercase;position:relative;z-index:1;}
+  .stage-sub{text-align:center;color:var(--pink-200);font-size:11px;margin-top:3px;position:relative;z-index:1;}
+  .aisle-note{text-align:center;font-size:12px;color:var(--pink-600);font-weight:600;margin:0 0 18px;}
+
+  .floor{display:grid;grid-template-columns:1fr 26px 1fr;gap:0 18px;align-items:start;}
+  .aisle{background:linear-gradient(180deg,var(--pink-400),var(--pink-700));width:100%;min-height:100%;border-radius:6px;align-self:stretch;}
+  .side-title{font-family:'Kanit',sans-serif;font-weight:600;font-size:13px;color:var(--ink-soft);text-align:center;margin-bottom:10px;}
+  .grid-panel{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:58px;gap:8px;}
+
+  .cell{
+    border-radius:10px;border:1.6px solid var(--line);background:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    cursor:pointer;padding:4px 3px;text-align:center;
+    transition:transform .12s ease, box-shadow .12s ease;position:relative;
+  }
+  .cell:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(190,24,93,.15);}
+  .cell .num{font-family:'Kanit',sans-serif;font-weight:700;font-size:15px;line-height:1.1;}
+  .cell .name{font-size:10px;color:var(--ink-soft);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
+
+  .cell.booked{background:var(--pink-200);border-color:var(--pink-400);}
+  .cell.booked .num{color:var(--pink-700);}
+  .cell.pending{background:var(--pink-50);border-color:var(--pink-400);}
+  .cell.pending .num{color:var(--pink-600);}
+  .cell.paid{background:var(--pink-600);border-color:var(--pink-700);}
+  .cell.paid .num, .cell.paid .name{color:#fff;}
+  .cell.spacer{visibility:hidden;pointer-events:none;}
+
+  .vip-box{
+    grid-column:2 / span 2;grid-row:1 / span 3;
+    border-radius:16px;border:2px solid var(--pink-900);background:#FBE4EE;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    cursor:pointer;text-align:center;gap:4px;padding:10px;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .vip-box:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(190,24,93,.15);}
+  .vip-box .vip-title{font-family:'Kanit',sans-serif;font-weight:800;color:var(--pink-900);font-size:20px;letter-spacing:.04em;}
+  .vip-box .vip-sets{font-size:12px;color:var(--pink-900);opacity:.8;}
+  .vip-box .vip-info{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+  .vip-box.booked{background:var(--pink-200);border-color:var(--pink-600);}
+  .vip-box.pending{background:#FCE9F1;border-color:var(--pink-600);}
+  .vip-box.paid{background:var(--pink-700);border-color:var(--pink-900);}
+  .vip-box.paid .vip-title,.vip-box.paid .vip-sets,.vip-box.paid .vip-info{color:#fff;}
+
+  .door-note{text-align:center;margin-top:20px;font-size:12px;color:var(--ink-soft);font-weight:600;}
+
+  .list-section{margin-top:30px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;}
+  .list-section h2{font-family:'Kanit',sans-serif;font-size:17px;margin:0 0 12px;color:var(--pink-900);}
+  .search-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+  .search-row input{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:14px;}
+  .search-row button{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;font-family:'Sarabun',sans-serif;font-size:13px;cursor:pointer;position:relative;}
+  table.booking-table{width:100%;border-collapse:collapse;font-size:13px;}
+  table.booking-table th,table.booking-table td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);}
+  table.booking-table th{color:var(--ink-soft);font-weight:600;font-size:12px;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;}
+  .badge.pending{background:var(--pink-50);color:var(--pink-600);}
+  .badge.paid{background:var(--pink-600);color:#fff;}
+
+  .overlay{position:fixed;inset:0;background:rgba(74,35,56,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50;}
+  .overlay.show{display:flex;}
+  .modal{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:22px;font-family:'Sarabun',sans-serif;}
+  .modal h3{font-family:'Kanit',sans-serif;margin:0 0 2px;font-size:19px;color:var(--pink-900);}
+  .modal .meta{font-size:12px;color:var(--ink-soft);margin-bottom:14px;}
+  .modal label{display:block;font-size:12px;color:var(--ink-soft);margin:10px 0 4px;}
+  .modal input,.modal select,.modal textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:14px;}
+  .modal textarea{resize:vertical;min-height:50px;}
+  .modal .btn-row{display:flex;gap:8px;margin-top:18px;}
+  .modal button{flex:1;padding:10px;border-radius:9px;border:none;font-family:'Kanit',sans-serif;font-weight:600;font-size:14px;cursor:pointer;}
+  .btn-save{background:var(--pink-600);color:#fff;}
+  .btn-clear{background:#F6E9F0;color:var(--ink);}
+  .btn-close{background:transparent;color:var(--ink-soft);flex:0 0 auto;padding:10px 12px;}
+  .modal .status-msg{font-size:12px;color:var(--green);min-height:16px;margin-top:8px;}
+  .modal .err-msg{font-size:12px;color:var(--pink-700);min-height:16px;margin-top:8px;}
+  .view-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .view-row .k{color:var(--ink-soft);}
+  .view-note{background:var(--pink-50);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--pink-600);margin-top:12px;}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--pink-900);color:#fff;padding:10px 18px;border-radius:999px;
+    font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;
+    opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;z-index:60;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  footer.foot{text-align:center;margin-top:26px;font-size:12px;color:var(--ink-soft);}
+  footer.foot button{margin-top:8px;background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--ink-soft);cursor:pointer;}
+
+  @media (max-width:720px){
+    .floor{grid-template-columns:1fr 14px 1fr;gap:0 10px;}
+    .cell .name{display:none;}
+    .grid-panel{grid-auto-rows:50px;}
+    .vip-box .vip-title{font-size:15px;}
+    .vip-box .vip-info{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">ระบบจองโต๊ะจีน</div>
+    <h1><span class="accent">ผังโต๊ะจีน</span>งานเกษียณ</h1>
+    <p class="sub">โต๊ะละ 2,000 บาท · นั่งได้ 8 ที่นั่งต่อโต๊ะ</p>
+  </header>
+
+  <div class="mode-bar">
+    <span class="mode-pill dash" id="modePill">👁 ดูภาพรวมการจอง</span>
+    <button id="modeToggleBtn">🔒 แอดมิน: กรอกข้อมูล</button>
+  </div>
+
+  <div class="stats" id="statsPublic"></div>
+  <div class="stats admin-stats" id="statsAdmin" style="display:none;"></div>
+
+  <div class="legend" id="legendPublic">
+    <span><i class="dot open"></i>ว่าง</span>
+    <span><i class="dot booked"></i>จองแล้ว</span>
+    <span><i class="dot vip"></i>โต๊ะ VIP</span>
+  </div>
+  <div class="legend" id="legendAdmin" style="display:none;">
+    <span><i class="dot open"></i>ว่าง</span>
+    <span><i class="dot pending"></i>จองแล้ว รอโอน</span>
+    <span><i class="dot paid"></i>โอนแล้ว 2,000 (ครบ)</span>
+    <span><i class="dot vip"></i>โต๊ะ VIP</span>
+  </div>
+
+  <div class="venue">
+    <div class="stage-wrap">
+      <div class="stage-curtain">
+        <div class="stage-lights"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="stage-title">เวที</div>
+        <div class="stage-sub">STAGE</div>
+      </div>
+    </div>
+    <div class="aisle-note">✿ ทางเดินกลาง ✿</div>
+
+    <div class="floor">
+      <div>
+        <div class="side-title">ฝั่งซ้าย</div>
+        <div class="grid-panel" id="leftPanel"></div>
+      </div>
+      <div class="aisle"></div>
+      <div>
+        <div class="side-title">ฝั่งขวา</div>
+        <div class="grid-panel" id="rightPanel"></div>
+      </div>
+    </div>
+
+    <div class="door-note">↓ ประตูทางเข้า ↓</div>
+  </div>
+
+  <div class="list-section" id="listSection" style="display:none;">
+    <h2>รายชื่อผู้จอง / ความคืบหน้า (แอดมิน)</h2>
+    <div class="search-row">
+      <input type="text" id="searchBox" placeholder="ค้นหาชื่อ หรือหมายเลขโต๊ะ..." />
+      <button id="exportBtn">คัดลอกสรุป</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="booking-table">
+        <thead><tr><th>โต๊ะ</th><th>ชื่อผู้จอง</th><th>เบอร์โทร</th><th>สถานะ</th><th>ยอดโอน</th><th>หมายเหตุ</th></tr></thead>
+        <tbody id="listBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <button id="resetBtn" style="display:none;">ล้างข้อมูลการจองทั้งหมด</button>
+  </footer>
+</div>
+
+<!-- table booking modal -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- admin PIN modal -->
+<div class="overlay" id="pinOverlay">
+  <div class="modal">
+    <h3>เข้าสู่โหมดแอดมิน</h3>
+    <div class="meta">กรอกรหัสผ่านเพื่อกรอก/แก้ไขข้อมูลการจอง</div>
+    <label>รหัสผ่านแอดมิน</label>
+    <input type="password" id="pinInput" placeholder="••••" />
+    <div class="err-msg" id="pinErr"></div>
+    <div class="btn-row">
+      <button class="btn-clear" id="pinCancel">ยกเลิก</button>
+      <button class="btn-save" id="pinSubmit">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- confirm reset modal -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal">
+    <h3>ล้างข้อมูลการจองทั้งหมด?</h3>
+    <div class="meta">การกระทำนี้จะลบข้อมูลการจองของทุกโต๊ะสำหรับทุกคน และไม่สามารถย้อนกลับได้</div>
+    <div class="btn-row">
+      <button class="btn-clear" id="confirmCancel">ยกเลิก</button>
+      <button class="btn-save" id="confirmOk">ยืนยันล้างข้อมูล</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const TABLE_PRICE = 2000;
+  const SEATS = 8;
+  const VIP_SETS = 3;
+  const EDIT_PIN = '2568'; // เปลี่ยนรหัสนี้ได้ตามต้องการ แล้วแจ้งเฉพาะแอดมินที่กรอกข้อมูลจริง
+
+  // วาง URL ของ Google Apps Script Web App ที่ deploy แล้ว (ลงท้ายด้วย /exec) ตรงนี้
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec';
+
+  let bookings = {};
+  let currentId = null;
+  let editMode = false;
+
+  // ---------- table id layouts ----------
+  const leftIds = [];
+  for(let r=0;r<10;r++){ leftIds.push({id:String(r+1), col:1, row:r+1}); } // 1-10
+  for(let r=0;r<7;r++){ leftIds.push({id:String(14+r), col:2, row:r+4}); } // 14-20
+  for(let r=0;r<7;r++){ leftIds.push({id:String(24+r), col:3, row:r+4}); } // 24-30
+  [61,62,63].forEach((n,i)=> leftIds.push({id:String(n), col:i+1, row:11}));
+
+  const rightIds = [];
+  for(let r=0;r<10;r++){ rightIds.push({id:String(31+r), col:1, row:r+1}); } // 31-40
+  for(let r=0;r<10;r++){ rightIds.push({id:String(41+r), col:2, row:r+1}); } // 41-50
+  for(let r=0;r<10;r++){ rightIds.push({id:String(51+r), col:3, row:r+1}); } // 51-60
+  [64,65,66].forEach((n,i)=> rightIds.push({id:String(n), col:i+1, row:11}));
+
+  const numberedIds = [...leftIds.map(x=>x.id), ...rightIds.map(x=>x.id)];
+  const allIds = [...numberedIds, 'VIP'];
+
+  // ---------- storage (Google Apps Script backend) ----------
+  const isConfigured = () => APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf('XXXX') === -1;
+
+  async function loadBookings(){
+    if(!isConfigured()){ bookings = bookings || {}; return; }
+    try{
+      const res = await fetch(APPS_SCRIPT_URL, { method:'GET' });
+      const data = await res.json();
+      bookings = data && typeof data === 'object' ? data : {};
+    }catch(e){
+      console.error('load failed', e);
+      // keep whatever is currently in memory rather than wiping it on a network hiccup
+    }
+  }
+  async function saveBookings(){
+    if(!isConfigured()){ showToast('ยังไม่ได้ตั้งค่า Apps Script URL — ดูคำแนะนำใต้ปุ่มแอดมิน'); return false; }
+    try{
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // text/plain avoids a CORS preflight
+        body: JSON.stringify(bookings)
+      });
+      const data = await res.json();
+      return !!(data && data.ok);
+    }catch(e){
+      console.error('save failed', e);
+      return false;
+    }
+  }
+
+  function statusOfNumbered(id){
+    const b = bookings[id];
+    if(!b || !b.name) return 'open';
+    return b.status === 'paid' ? 'paid' : 'pending';
+  }
+  function vipBooking(){ return bookings['VIP'] || null; }
+  function vipStatus(){
+    const b = vipBooking();
+    if(!b || !b.name) return 'open';
+    return b.status === 'paid' ? 'paid' : 'pending';
+  }
+
+  // ---------- toast ----------
+  let toastTimer = null;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+  }
+
+  // ---------- render seating chart ----------
+  function makeCell(idObj){
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.style.gridColumn = idObj.col;
+    div.style.gridRow = idObj.row;
+    div.dataset.id = idObj.id;
+    div.addEventListener('click', ()=> openModal(idObj.id));
+    renderCell(div, idObj.id);
+    return div;
+  }
+  function cellClass(realStatus){
+    if(realStatus === 'open') return '';
+    return editMode ? realStatus : 'booked';
+  }
+  function renderCell(div, id){
+    const real = statusOfNumbered(id);
+    div.className = 'cell ' + cellClass(real);
+    const b = bookings[id];
+    const showName = editMode && b && b.name;
+    div.innerHTML = `<div class="num">${id}</div>` + (showName ? `<div class="name">${escapeHtml(b.name)}</div>` : '');
+  }
+
+  function buildPanels(){
+    const leftPanel = document.getElementById('leftPanel');
+    const rightPanel = document.getElementById('rightPanel');
+    leftPanel.innerHTML = '';
+    rightPanel.innerHTML = '';
+
+    leftIds.forEach(o=> leftPanel.appendChild(makeCell(o)));
+
+    // VIP box now sits in the left panel, column 2, rows 1-3
+    const vipBox = document.createElement('div');
+    vipBox.className = 'vip-box';
+    vipBox.dataset.id = 'VIP';
+    vipBox.addEventListener('click', ()=> openModal('VIP'));
+    leftPanel.appendChild(vipBox);
+    renderVipBox(vipBox);
+
+    rightIds.forEach(o=> rightPanel.appendChild(makeCell(o)));
+  }
+  function renderVipBox(div){
+    const real = vipStatus();
+    div.className = 'vip-box ' + cellClass(real);
+    const b = vipBooking();
+    if(!editMode || !b || !b.name){
+      div.innerHTML = `<div class="vip-title">VIP</div><div class="vip-sets">${VIP_SETS} ชุด</div>`;
+      return;
+    }
+    const qty = b.qty || 1;
+    div.innerHTML = `<div class="vip-title">VIP</div><div class="vip-sets">จอง ${qty}/${VIP_SETS} ชุด</div><div class="vip-info">${escapeHtml(b.name)}</div>`;
+  }
+
+  function refreshAllCells(){
+    document.querySelectorAll('#leftPanel .cell, #rightPanel .cell').forEach(div=>{
+      if(div.classList.contains('spacer')) return;
+      renderCell(div, div.dataset.id);
+    });
+    const vipBox = document.querySelector('.vip-box');
+    if(vipBox) renderVipBox(vipBox);
+  }
+
+  // ---------- stats ----------
+  function vipCounts(){
+    const b = vipBooking();
+    if(!b || !b.name) return {open:VIP_SETS, pending:0, paid:0};
+    const qty = Math.min(Math.max(b.qty||1,1), VIP_SETS);
+    if(b.status === 'paid') return {open:VIP_SETS-qty, pending:0, paid:qty};
+    return {open:VIP_SETS-qty, pending:qty, paid:0};
+  }
+  function computeTotals(){
+    let open=0, pending=0, paid=0;
+    numberedIds.forEach(id=>{
+      const s = statusOfNumbered(id);
+      if(s==='open') open++; else if(s==='pending') pending++; else paid++;
+    });
+    const v = vipCounts();
+    open += v.open; pending += v.pending; paid += v.paid;
+    const total = numberedIds.length + VIP_SETS;
+    return {open, pending, paid, total};
+  }
+  function renderStats(){
+    const t = computeTotals();
+    document.getElementById('statsPublic').innerHTML = `
+      <div class="stat"><div class="num">${t.total}</div><div class="lbl">โต๊ะทั้งหมด</div></div>
+      <div class="stat"><div class="num">${t.open}</div><div class="lbl">ที่ว่าง</div></div>
+    `;
+    const totalMoney = t.paid * TABLE_PRICE;
+    const potentialMoney = t.total * TABLE_PRICE;
+    document.getElementById('statsAdmin').innerHTML = `
+      <div class="stat"><div class="num">${t.total}</div><div class="lbl">โต๊ะทั้งหมด</div></div>
+      <div class="stat"><div class="num">${t.open}</div><div class="lbl">ที่ว่าง</div></div>
+      <div class="stat pending"><div class="num">${t.pending}</div><div class="lbl">จองแล้ว รอโอน</div></div>
+      <div class="stat paid"><div class="num">${t.paid}</div><div class="lbl">โอนแล้ว (ครบ)</div></div>
+      <div class="stat money"><div class="num">${totalMoney.toLocaleString('th-TH')}</div><div class="lbl">ยอดโอนแล้ว (บาท)</div></div>
+      <div class="stat"><div class="num">${potentialMoney.toLocaleString('th-TH')}</div><div class="lbl">ยอดรวมเต็ม (บาท)</div></div>
+    `;
+  }
+
+  // ---------- list (admin only) ----------
+  function renderList(filter){
+    const body = document.getElementById('listBody');
+    const f = (filter||'').trim().toLowerCase();
+    const rows = allIds
+      .map(id=>({id, b:bookings[id]}))
+      .filter(r=>r.b && r.b.name)
+      .filter(r=> !f || r.id.toLowerCase().includes(f) || (r.b.name||'').toLowerCase().includes(f))
+      .sort((a,b)=> a.id.localeCompare(b.id, 'th', {numeric:true}));
+
+    if(rows.length===0){
+      body.innerHTML = `<tr><td colspan="6" style="color:#b98ba5;text-align:center;padding:16px;">ยังไม่มีรายการที่ตรงกับการค้นหา</td></tr>`;
+      return;
+    }
+    body.innerHTML = rows.map(r=>{
+      const st = r.b.status==='paid' ? 'paid' : 'pending';
+      const label = st==='paid' ? 'โอนแล้ว' : 'รอโอน';
+      const isVip = r.id === 'VIP';
+      const qty = isVip ? (r.b.qty||1) : 1;
+      const amount = r.b.amount!=null ? Number(r.b.amount) : (st==='paid'? TABLE_PRICE*qty : 0);
+      const tableLabel = isVip ? `VIP (${qty} ชุด)` : r.id;
+      return `<tr>
+        <td>${tableLabel}</td>
+        <td>${escapeHtml(r.b.name)}</td>
+        <td>${escapeHtml(r.b.phone||'-')}</td>
+        <td><span class="badge ${st}">${label}</span></td>
+        <td>${amount.toLocaleString('th-TH')} บาท</td>
+        <td>${escapeHtml(r.b.note||'-')}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ---------- booking modal ----------
+  function openModal(id){
+    currentId = id;
+    document.getElementById('modalBox').innerHTML = editMode ? modalEditHtml(id) : modalPublicHtml(id);
+    document.getElementById('overlay').classList.add('show');
+    wireModalEvents(id);
+  }
+  function closeModal(){
+    document.getElementById('overlay').classList.remove('show');
+    currentId = null;
+  }
+
+  function modalPublicHtml(id){
+    const isVip = id === 'VIP';
+    const title = isVip ? 'โต๊ะ VIP' : `โต๊ะที่ ${id}`;
+    const real = isVip ? vipStatus() : statusOfNumbered(id);
+    const statusText = real === 'open' ? 'ว่าง' : 'จองแล้ว';
+    return `
+      <h3>${title}</h3>
+      <div class="meta">${isVip ? VIP_SETS+' ชุด · ชุดละ '+SEATS+' ที่นั่ง' : SEATS+' ที่นั่ง'} · ราคา ${TABLE_PRICE.toLocaleString('th-TH')} บาท/ชุด</div>
+      <div class="view-row"><span class="k">สถานะ</span><span>${statusText}</span></div>
+      <div class="view-note">หน้านี้แสดงเฉพาะสถานะโต๊ะ ไม่แสดงชื่อผู้จองหรือยอดเงิน — แอดมินเข้าสู่ระบบเพื่อดู/แก้ไขรายละเอียดได้ที่ปุ่มด้านบน</div>
+      <div class="btn-row"><button class="btn-close" id="btnCloseModal" style="flex:1;">ปิด</button></div>
+    `;
+  }
+
+  function modalEditHtml(id){
+    const isVip = id === 'VIP';
+    const b = bookings[id] || {};
+    const title = isVip ? 'โต๊ะ VIP' : `โต๊ะที่ ${id}`;
+    const qtyField = isVip ? `
+      <label>จำนวนชุด VIP ที่จอง (สูงสุด ${VIP_SETS})</label>
+      <select id="fQty">
+        ${[1,2,3].map(n=>`<option value="${n}" ${((b.qty||1)===n)?'selected':''}>${n} ชุด</option>`).join('')}
+      </select>` : '';
+    return `
+      <h3>${title}</h3>
+      <div class="meta">${isVip ? VIP_SETS+' ชุด · ชุดละ '+SEATS+' ที่นั่ง' : SEATS+' ที่นั่ง'} · ราคา ${TABLE_PRICE.toLocaleString('th-TH')} บาท/ชุด</div>
+      <label>ชื่อผู้จอง</label>
+      <input type="text" id="fName" placeholder="เช่น คุณสมชาย ใจดี" value="${b.name ? escapeHtml(b.name) : ''}" />
+      <label>เบอร์โทร</label>
+      <input type="text" id="fPhone" placeholder="08x-xxx-xxxx" value="${b.phone ? escapeHtml(b.phone) : ''}" />
+      ${qtyField}
+      <label>สถานะการชำระเงิน</label>
+      <select id="fStatus">
+        <option value="pending" ${b.status!=='paid'?'selected':''}>จองแล้ว (ยังไม่โอน)</option>
+        <option value="paid" ${b.status==='paid'?'selected':''}>โอนแล้ว (ครบ)</option>
+      </select>
+      <label>หมายเหตุ</label>
+      <textarea id="fNote" placeholder="เช่น นั่งรวมกับโต๊ะ 5, ขอโต๊ะใกล้เวที ฯลฯ">${b.note?escapeHtml(b.note):''}</textarea>
+      <div class="btn-row">
+        <button class="btn-clear" id="btnClear">ยกเลิกจอง</button>
+        <button class="btn-save" id="btnSave">บันทึก</button>
+        <button class="btn-close" id="btnCloseModal">ปิด</button>
+      </div>
+      <div class="status-msg" id="modalStatusMsg"></div>
+    `;
+  }
+
+  function wireModalEvents(id){
+    const closeBtn = document.getElementById('btnCloseModal');
+    if(closeBtn) closeBtn.addEventListener('click', closeModal);
+    if(!editMode) return;
+    document.getElementById('btnSave').addEventListener('click', ()=> saveCurrent(id));
+    document.getElementById('btnClear').addEventListener('click', ()=> clearCurrent(id));
+  }
+
+  async function saveCurrent(id){
+    const name = document.getElementById('fName').value.trim();
+    const msg = document.getElementById('modalStatusMsg');
+    if(!name){ msg.style.color = '#BE185D'; msg.textContent = 'กรุณากรอกชื่อผู้จอง'; return; }
+    const status = document.getElementById('fStatus').value;
+    const isVip = id === 'VIP';
+    const qty = isVip ? Number(document.getElementById('fQty').value) : 1;
+    bookings[id] = {
+      name,
+      phone: document.getElementById('fPhone').value.trim(),
+      status,
+      qty: isVip ? qty : undefined,
+      amount: status === 'paid' ? TABLE_PRICE * qty : 0,
+      note: document.getElementById('fNote').value.trim(),
+      updatedAt: new Date().toISOString()
+    };
+    msg.style.color = '#9C6B87'; msg.textContent = 'กำลังบันทึก...';
+    const ok = await saveBookings();
+    msg.style.color = ok ? '#2F9E44' : '#BE185D';
+    msg.textContent = ok ? 'บันทึกแล้ว' : 'บันทึกไม่สำเร็จ ลองอีกครั้ง';
+    refreshAllCells(); renderStats(); renderList(document.getElementById('searchBox').value);
+    if(ok) setTimeout(closeModal, 500);
+  }
+  async function clearCurrent(id){
+    delete bookings[id];
+    const ok = await saveBookings();
+    refreshAllCells(); renderStats(); renderList(document.getElementById('searchBox').value);
+    if(ok) closeModal();
+  }
+
+  function escapeHtml(str){ return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
+
+  // ---------- mode toggle (custom PIN modal, no native prompt) ----------
+  function updateModeUI(){
+    const pill = document.getElementById('modePill');
+    const btn = document.getElementById('modeToggleBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    document.getElementById('statsPublic').style.display = editMode ? 'none' : 'grid';
+    document.getElementById('statsAdmin').style.display = editMode ? 'grid' : 'none';
+    document.getElementById('legendPublic').style.display = editMode ? 'none' : 'flex';
+    document.getElementById('legendAdmin').style.display = editMode ? 'flex' : 'none';
+    document.getElementById('listSection').style.display = editMode ? 'block' : 'none';
+    if(editMode){
+      pill.className = 'mode-pill edit';
+      pill.textContent = '✏️ โหมดแอดมิน (แก้ไขได้)';
+      btn.textContent = '👁 กลับไปหน้าดูภาพรวม';
+      resetBtn.style.display = 'inline-block';
+    }else{
+      pill.className = 'mode-pill dash';
+      pill.textContent = '👁 ดูภาพรวมการจอง';
+      btn.textContent = '🔒 แอดมิน: กรอกข้อมูล';
+      resetBtn.style.display = 'none';
+    }
+    refreshAllCells();
+  }
+
+  function openPinModal(){
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinErr').textContent = '';
+    document.getElementById('pinOverlay').classList.add('show');
+    setTimeout(()=> document.getElementById('pinInput').focus(), 50);
+  }
+  function closePinModal(){ document.getElementById('pinOverlay').classList.remove('show'); }
+  function submitPin(){
+    const val = document.getElementById('pinInput').value;
+    if(val === EDIT_PIN){
+      editMode = true;
+      updateModeUI();
+      closePinModal();
+    }else{
+      document.getElementById('pinErr').textContent = 'รหัสผ่านไม่ถูกต้อง ลองอีกครั้ง';
+    }
+  }
+
+  function toggleMode(){
+    if(editMode){
+      editMode = false;
+      updateModeUI();
+      return;
+    }
+    openPinModal();
+  }
+
+  // ---------- confirm reset modal ----------
+  function openConfirmModal(){ document.getElementById('confirmOverlay').classList.add('show'); }
+  function closeConfirmModal(){ document.getElementById('confirmOverlay').classList.remove('show'); }
+
+  // ---------- init ----------
+  async function init(){
+    buildPanels();
+    renderStats();
+    renderList('');
+    updateModeUI();
+    await loadBookings();
+    refreshAllCells();
+    renderStats();
+    renderList('');
+    if(!isConfigured()) showToast('ยังไม่ได้ตั้งค่า Apps Script URL — ดูคอมเมนต์ในโค้ด (APPS_SCRIPT_URL)');
+
+    document.getElementById('modeToggleBtn').addEventListener('click', toggleMode);
+    document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeModal(); });
+    document.getElementById('searchBox').addEventListener('input', (e)=> renderList(e.target.value));
+
+    document.getElementById('pinCancel').addEventListener('click', closePinModal);
+    document.getElementById('pinSubmit').addEventListener('click', submitPin);
+    document.getElementById('pinInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') submitPin(); });
+    document.getElementById('pinOverlay').addEventListener('click', (e)=>{ if(e.target.id==='pinOverlay') closePinModal(); });
+
+    document.getElementById('confirmCancel').addEventListener('click', closeConfirmModal);
+    document.getElementById('confirmOverlay').addEventListener('click', (e)=>{ if(e.target.id==='confirmOverlay') closeConfirmModal(); });
+    document.getElementById('confirmOk').addEventListener('click', async ()=>{
+      bookings = {};
+      await saveBookings();
+      refreshAllCells(); renderStats(); renderList('');
+      closeConfirmModal();
+      showToast('ล้างข้อมูลทั้งหมดแล้ว');
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const rows = allIds.filter(id=>bookings[id] && bookings[id].name)
+        .sort((a,b)=>a.localeCompare(b,'th',{numeric:true}))
+        .map(id=>{
+          const b = bookings[id];
+          const st = b.status==='paid' ? 'โอนแล้ว' : 'รอโอน';
+          const label = id === 'VIP' ? `VIP (${b.qty||1} ชุด)` : `โต๊ะ ${id}`;
+          return `${label} - ${b.name} - ${b.phone||'-'} - ${st}`;
+        }).join('\n');
+      const text = rows || 'ยังไม่มีรายการจอง';
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(()=> showToast('คัดลอกสรุปรายชื่อแล้ว'))
+          .catch(()=> showToast('คัดลอกไม่สำเร็จ ลองอีกครั้ง'));
+      }else{
+        showToast('เบราว์เซอร์นี้ไม่รองรับการคัดลอกอัตโนมัติ');
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      if(!editMode) return;
+      openConfirmModal();
+    });
+
+    setInterval(async ()=>{
+      await loadBookings();
+      refreshAllCells(); renderStats();
+      if(editMode) renderList(document.getElementById('searchBox').value);
+    }, 8000);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
