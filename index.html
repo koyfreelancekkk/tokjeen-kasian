@@ -86,7 +86,7 @@
   .floor{display:grid;grid-template-columns:1fr 26px 1fr;gap:0 18px;align-items:start;}
   .aisle{background:linear-gradient(180deg,var(--pink-400),var(--pink-700));width:100%;min-height:100%;border-radius:6px;align-self:stretch;}
   .side-title{font-family:'Kanit',sans-serif;font-weight:600;font-size:13px;color:var(--ink-soft);text-align:center;margin-bottom:10px;}
-  .grid-panel{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:58px;gap:8px;}
+  .grid-panel{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:58px;gap:8px;}
 
   .cell{
     border-radius:10px;border:1.6px solid var(--line);background:#fff;
@@ -106,21 +106,21 @@
   .cell.paid .num, .cell.paid .name{color:#fff;}
   .cell.spacer{visibility:hidden;pointer-events:none;}
 
-  .vip-box{
-    grid-column:2 / span 2;grid-row:1 / span 4;
-    border-radius:16px;border:2px solid var(--pink-900);background:#FBE4EE;
+  .vip-bar{
+    grid-column:1 / -1;
+    border-radius:14px;border:2px solid var(--pink-900);background:#FBE4EE;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    cursor:pointer;text-align:center;gap:4px;padding:10px;
+    cursor:pointer;text-align:center;gap:2px;padding:8px;
     transition:transform .12s ease, box-shadow .12s ease;
   }
-  .vip-box:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(190,24,93,.15);}
-  .vip-box .vip-title{font-family:'Kanit',sans-serif;font-weight:800;color:var(--pink-900);font-size:20px;letter-spacing:.04em;}
-  .vip-box .vip-sets{font-size:12px;color:var(--pink-900);opacity:.8;}
-  .vip-box .vip-info{font-size:12px;color:var(--ink-soft);margin-top:4px;}
-  .vip-box.booked{background:var(--pink-200);border-color:var(--pink-600);}
-  .vip-box.pending{background:#FCE9F1;border-color:var(--pink-600);}
-  .vip-box.paid{background:var(--pink-700);border-color:var(--pink-900);}
-  .vip-box.paid .vip-title,.vip-box.paid .vip-sets,.vip-box.paid .vip-info{color:#fff;}
+  .vip-bar:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(190,24,93,.15);}
+  .vip-bar .vip-title{font-family:'Kanit',sans-serif;font-weight:800;color:var(--pink-900);font-size:20px;letter-spacing:.04em;}
+  .vip-bar .vip-sub{font-size:11px;color:var(--pink-900);opacity:.75;}
+  .vip-bar .vip-info{font-size:12px;color:var(--ink-soft);}
+  .vip-bar.booked{background:var(--pink-200);border-color:var(--pink-600);}
+  .vip-bar.pending{background:#FCE9F1;border-color:var(--pink-600);}
+  .vip-bar.paid{background:var(--pink-700);border-color:var(--pink-900);}
+  .vip-bar.paid .vip-title,.vip-bar.paid .vip-sub,.vip-bar.paid .vip-info{color:#fff;}
 
   .door-note{text-align:center;margin-top:20px;font-size:12px;color:var(--ink-soft);font-weight:600;}
 
@@ -170,8 +170,8 @@
     .floor{grid-template-columns:1fr 14px 1fr;gap:0 10px;}
     .cell .name{display:none;}
     .grid-panel{grid-auto-rows:50px;}
-    .vip-box .vip-title{font-size:15px;}
-    .vip-box .vip-info{display:none;}
+    .vip-bar .vip-title{font-size:15px;}
+    .vip-bar .vip-info{display:none;}
   }
 </style>
 </head>
@@ -286,11 +286,10 @@
 (function(){
   const TABLE_PRICE = 2000;
   const SEATS = 8;
-  const VIP_SETS = 6;
   const EDIT_PIN = '2568'; // เปลี่ยนรหัสนี้ได้ตามต้องการ แล้วแจ้งเฉพาะแอดมินที่กรอกข้อมูลจริง
 
   // วาง URL ของ Google Apps Script Web App ที่ deploy แล้ว (ลงท้ายด้วย /exec) ตรงนี้
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqye0ADjCsUP9aV5xOrtm-f4vUKg7pMKBS32LLagnhkExHMdGAUY3GEd4NUPJY9hc/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzx2SuTvbwtGrDjb7mEO8ui23XlNrRBqMC7g_5rsnwD7svtqh2t5BhY9fN2UtW6lgE/exec';
 
   let bookings = {};
   let currentId = null;
@@ -298,17 +297,20 @@
 
   // ---------- table id layouts ----------
   const leftIds = [];
-  [1,2,3,4,5,6,7,8,9,10,11,12,13,80,81,82].forEach((n,i)=> leftIds.push({id:String(n), col:1, row:i+1}));
-  [14,15,16,17,18,19,20,21,22,83,84,85].forEach((n,i)=> leftIds.push({id:String(n), col:2, row:i+5})); // rows 5-16 (rows 1-4 = VIP)
-  [23,24,25,26,27,28,29,30,79,86,87,88].forEach((n,i)=> leftIds.push({id:String(n), col:3, row:i+5})); // rows 5-16 (rows 1-4 = VIP)
+  [1,2,3,4,5,6,7,8,73,81].forEach((n,i)=> leftIds.push({id:String(n), col:1, row:i+3})); // rows 3-12 (rows 1-2 = VIP bars)
+  [9,10,11,12,13,14,15,16,74,82].forEach((n,i)=> leftIds.push({id:String(n), col:2, row:i+3}));
+  [17,18,19,20,21,22,23,24,75,83].forEach((n,i)=> leftIds.push({id:String(n), col:3, row:i+3}));
+  [25,26,27,28,29,30,71,72,76,84].forEach((n,i)=> leftIds.push({id:String(n), col:4, row:i+3}));
 
   const rightIds = [];
-  [31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46].forEach((n,i)=> rightIds.push({id:String(n), col:1, row:i+1}));
-  [47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62].forEach((n,i)=> rightIds.push({id:String(n), col:2, row:i+1}));
-  [63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78].forEach((n,i)=> rightIds.push({id:String(n), col:3, row:i+1}));
+  [31,32,33,34,35,36,37,38,39,40,77,85].forEach((n,i)=> rightIds.push({id:String(n), col:1, row:i+1}));
+  [41,42,43,44,45,46,47,48,49,50,78,86].forEach((n,i)=> rightIds.push({id:String(n), col:2, row:i+1}));
+  [51,52,53,54,55,56,57,58,59,60,79,87].forEach((n,i)=> rightIds.push({id:String(n), col:3, row:i+1}));
+  [61,62,63,64,65,66,67,68,69,70,80,88].forEach((n,i)=> rightIds.push({id:String(n), col:4, row:i+1}));
 
   const numberedIds = [...leftIds.map(x=>x.id), ...rightIds.map(x=>x.id)];
-  const allIds = [...numberedIds, 'VIP'];
+  const vipIds = ['VIP1','VIP2'];
+  const allIds = [...numberedIds, ...vipIds];
 
   // ---------- storage (Google Apps Script backend) ----------
   const isConfigured = () => APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf('XXXX') === -1;
@@ -342,12 +344,6 @@
 
   function statusOfNumbered(id){
     const b = bookings[id];
-    if(!b || !b.name) return 'open';
-    return b.status === 'paid' ? 'paid' : 'pending';
-  }
-  function vipBooking(){ return bookings['VIP'] || null; }
-  function vipStatus(){
-    const b = vipBooking();
     if(!b || !b.name) return 'open';
     return b.status === 'paid' ? 'paid' : 'pending';
   }
@@ -391,28 +387,26 @@
     leftPanel.innerHTML = '';
     rightPanel.innerHTML = '';
 
+    // two full-width VIP bars sit at the top of the left panel, rows 1-2
+    vipIds.forEach((vid, i)=>{
+      const bar = document.createElement('div');
+      bar.className = 'vip-bar';
+      bar.style.gridRow = i+1;
+      bar.dataset.id = vid;
+      bar.addEventListener('click', ()=> openModal(vid));
+      leftPanel.appendChild(bar);
+      renderVipBar(bar, vid);
+    });
+
     leftIds.forEach(o=> leftPanel.appendChild(makeCell(o)));
-
-    // VIP box now sits in the left panel, column 2, rows 1-3
-    const vipBox = document.createElement('div');
-    vipBox.className = 'vip-box';
-    vipBox.dataset.id = 'VIP';
-    vipBox.addEventListener('click', ()=> openModal('VIP'));
-    leftPanel.appendChild(vipBox);
-    renderVipBox(vipBox);
-
     rightIds.forEach(o=> rightPanel.appendChild(makeCell(o)));
   }
-  function renderVipBox(div){
-    const real = vipStatus();
-    div.className = 'vip-box ' + cellClass(real);
-    const b = vipBooking();
-    if(!editMode || !b || !b.name){
-      div.innerHTML = `<div class="vip-title">VIP</div><div class="vip-sets">${VIP_SETS} ชุด</div>`;
-      return;
-    }
-    const qty = b.qty || 1;
-    div.innerHTML = `<div class="vip-title">VIP</div><div class="vip-sets">จอง ${qty}/${VIP_SETS} ชุด</div><div class="vip-info">${escapeHtml(b.name)}</div>`;
+  function renderVipBar(div, id){
+    const real = statusOfNumbered(id);
+    div.className = 'vip-bar ' + cellClass(real);
+    const b = bookings[id];
+    const showName = editMode && b && b.name;
+    div.innerHTML = `<div class="vip-title">VIP</div>` + (showName ? `<div class="vip-info">${escapeHtml(b.name)}</div>` : '');
   }
 
   function refreshAllCells(){
@@ -420,8 +414,7 @@
       if(div.classList.contains('spacer')) return;
       renderCell(div, div.dataset.id);
     });
-    const vipBox = document.querySelector('.vip-box');
-    if(vipBox) renderVipBox(vipBox);
+    document.querySelectorAll('.vip-bar').forEach(div=> renderVipBar(div, div.dataset.id));
   }
 
   // ---------- stats ----------
@@ -470,10 +463,9 @@
     body.innerHTML = rows.map(r=>{
       const st = r.b.status==='paid' ? 'paid' : 'pending';
       const label = st==='paid' ? 'โอนแล้ว' : 'รอโอน';
-      const isVip = r.id === 'VIP';
-      const qty = isVip ? (r.b.qty||1) : 1;
-      const amount = r.b.amount!=null ? Number(r.b.amount) : (st==='paid'? TABLE_PRICE*qty : 0);
-      const tableLabel = isVip ? `VIP (${qty} ชุด)` : r.id;
+      const isVip = r.id.startsWith('VIP');
+      const amount = r.b.amount!=null ? Number(r.b.amount) : (st==='paid'? TABLE_PRICE : 0);
+      const tableLabel = isVip ? `VIP (${r.id.slice(-1)})` : r.id;
       return `<tr>
         <td>${tableLabel}</td>
         <td>${escapeHtml(r.b.name)}</td>
@@ -498,13 +490,13 @@
   }
 
   function modalPublicHtml(id){
-    const isVip = id === 'VIP';
-    const title = isVip ? 'โต๊ะ VIP' : `โต๊ะที่ ${id}`;
-    const real = isVip ? vipStatus() : statusOfNumbered(id);
+    const isVip = id.startsWith('VIP');
+    const title = isVip ? `โต๊ะ VIP (${id.slice(-1)})` : `โต๊ะที่ ${id}`;
+    const real = statusOfNumbered(id);
     const statusText = real === 'open' ? 'ว่าง' : 'จองแล้ว';
     return `
       <h3>${title}</h3>
-      <div class="meta">${isVip ? VIP_SETS+' ชุด · ชุดละ '+SEATS+' ที่นั่ง' : SEATS+' ที่นั่ง'} · ราคา ${TABLE_PRICE.toLocaleString('th-TH')} บาท/ชุด</div>
+      <div class="meta">${isVip ? 'โต๊ะ VIP (ไม่นับรวมในยอดเงิน)' : SEATS+' ที่นั่ง · ราคา '+TABLE_PRICE.toLocaleString('th-TH')+' บาท/ชุด'}</div>
       <div class="view-row"><span class="k">สถานะ</span><span>${statusText}</span></div>
       <div class="view-note">หน้านี้แสดงเฉพาะสถานะโต๊ะ ไม่แสดงชื่อผู้จองหรือยอดเงิน — แอดมินเข้าสู่ระบบเพื่อดู/แก้ไขรายละเอียดได้ที่ปุ่มด้านบน</div>
       <div class="btn-row"><button class="btn-close" id="btnCloseModal" style="flex:1;">ปิด</button></div>
@@ -512,22 +504,16 @@
   }
 
   function modalEditHtml(id){
-    const isVip = id === 'VIP';
+    const isVip = id.startsWith('VIP');
     const b = bookings[id] || {};
-    const title = isVip ? 'โต๊ะ VIP' : `โต๊ะที่ ${id}`;
-    const qtyField = isVip ? `
-      <label>จำนวนชุด VIP ที่จอง (สูงสุด ${VIP_SETS})</label>
-      <select id="fQty">
-        ${Array.from({length:VIP_SETS},(_,i)=>i+1).map(n=>`<option value="${n}" ${((b.qty||1)===n)?'selected':''}>${n} ชุด</option>`).join('')}
-      </select>` : '';
+    const title = isVip ? `โต๊ะ VIP (${id.slice(-1)})` : `โต๊ะที่ ${id}`;
     return `
       <h3>${title}</h3>
-      <div class="meta">${isVip ? VIP_SETS+' ชุด · ชุดละ '+SEATS+' ที่นั่ง' : SEATS+' ที่นั่ง'} · ราคา ${TABLE_PRICE.toLocaleString('th-TH')} บาท/ชุด</div>
+      <div class="meta">${isVip ? 'โต๊ะ VIP (ไม่นับรวมในยอดเงิน)' : SEATS+' ที่นั่ง · ราคา '+TABLE_PRICE.toLocaleString('th-TH')+' บาท/ชุด'}</div>
       <label>ชื่อผู้จอง</label>
       <input type="text" id="fName" placeholder="เช่น คุณสมชาย ใจดี" value="${b.name ? escapeHtml(b.name) : ''}" />
       <label>เบอร์โทร</label>
       <input type="text" id="fPhone" placeholder="08x-xxx-xxxx" value="${b.phone ? escapeHtml(b.phone) : ''}" />
-      ${qtyField}
       <label>สถานะการชำระเงิน</label>
       <select id="fStatus">
         <option value="pending" ${b.status!=='paid'?'selected':''}>จองแล้ว (ยังไม่โอน)</option>
@@ -557,14 +543,11 @@
     const msg = document.getElementById('modalStatusMsg');
     if(!name){ msg.style.color = '#BE185D'; msg.textContent = 'กรุณากรอกชื่อผู้จอง'; return; }
     const status = document.getElementById('fStatus').value;
-    const isVip = id === 'VIP';
-    const qty = isVip ? Number(document.getElementById('fQty').value) : 1;
     bookings[id] = {
       name,
       phone: document.getElementById('fPhone').value.trim(),
       status,
-      qty: isVip ? qty : undefined,
-      amount: status === 'paid' ? TABLE_PRICE * qty : 0,
+      amount: status === 'paid' ? TABLE_PRICE : 0,
       note: document.getElementById('fNote').value.trim(),
       updatedAt: new Date().toISOString()
     };
@@ -676,7 +659,7 @@
         .map(id=>{
           const b = bookings[id];
           const st = b.status==='paid' ? 'โอนแล้ว' : 'รอโอน';
-          const label = id === 'VIP' ? `VIP (${b.qty||1} ชุด)` : `โต๊ะ ${id}`;
+          const label = id.startsWith('VIP') ? `VIP (${id.slice(-1)})` : `โต๊ะ ${id}`;
           return `${label} - ${b.name} - ${b.phone||'-'} - ${st}`;
         }).join('\n');
       const text = rows || 'ยังไม่มีรายการจอง';
