@@ -288,15 +288,15 @@
   [1,2,3,4,5,6,7,8,9,10,11,12].forEach((n,i)=> leftIds.push({id:String(n), col:1, row:i+1}));
   [13,14,15,16,17,18,19,20,21,22,23,24].forEach((n,i)=> leftIds.push({id:String(n), col:2, row:i+1}));
   leftIds.push({id:'VIP1', col:3, row:1, rowSpan:3});
-  [28,29,30,71,72,73,74,75,76].forEach((n,i)=> leftIds.push({id:String(n), col:3, row:i+4})); // rows 4-12 (rows 1-3 = VIP1)
+  [25,26,27,28,29,30,31,32,33].forEach((n,i)=> leftIds.push({id:String(n), col:3, row:i+4})); // rows 4-12
   leftIds.push({id:'VIP2', col:4, row:1, rowSpan:3});
-  [84,89,90,91,92,93,94,95,96].forEach((n,i)=> leftIds.push({id:String(n), col:4, row:i+4})); // rows 4-12 (rows 1-3 = VIP2)
+  [34,35,36,37,38,39,40,41,42].forEach((n,i)=> leftIds.push({id:String(n), col:4, row:i+4})); // rows 4-12
 
   const rightIds = [];
-  [31,32,33,34,35,36,37,38,39,40,77,85].forEach((n,i)=> rightIds.push({id:String(n), col:1, row:i+1}));
-  [41,42,43,44,45,46,47,48,49,50,78,86].forEach((n,i)=> rightIds.push({id:String(n), col:2, row:i+1}));
-  [51,52,53,54,55,56,57,58,59,60,79,87].forEach((n,i)=> rightIds.push({id:String(n), col:3, row:i+1}));
-  [61,62,63,64,65,66,67,68,69,70,80,88].forEach((n,i)=> rightIds.push({id:String(n), col:4, row:i+1}));
+  [43,44,45,46,47,48,49,50,51,52,53,54].forEach((n,i)=> rightIds.push({id:String(n), col:1, row:i+1}));
+  [55,56,57,58,59,60,61,62,63,64,65,66].forEach((n,i)=> rightIds.push({id:String(n), col:2, row:i+1}));
+  [67,68,69,70,71,72,73,74,75,76,77,78].forEach((n,i)=> rightIds.push({id:String(n), col:3, row:i+1}));
+  [79,80,81,82,83,84,85,86,87,88,89,90].forEach((n,i)=> rightIds.push({id:String(n), col:4, row:i+1}));
 
   const numberedIds = [...leftIds.map(x=>x.id), ...rightIds.map(x=>x.id)].filter(id=>!id.startsWith('VIP'));
   const allIds = [...leftIds.map(x=>x.id), ...rightIds.map(x=>x.id)];
@@ -369,7 +369,8 @@
     const b = bookings[id];
     const showName = editMode && b && b.name;
     const label = isVip ? 'VIP' : id;
-    div.innerHTML = `<div class="num">${label}</div>` + (showName ? `<div class="name">${escapeHtml(b.name)}</div>` : '');
+    const vipNote = isVip ? `<div class="name" style="opacity:.8">3 โต๊ะ</div>` : '';
+    div.innerHTML = `<div class="num">${label}</div>` + vipNote + (showName ? `<div class="name">${escapeHtml(b.name)}</div>` : '');
   }
 
   function buildPanels(){
@@ -396,22 +397,9 @@
       const s = statusOfNumbered(id);
       if(s==='open') open++; else if(s==='pending') pending++; else paid++;
     });
-    const moneyPaid = paid; // real paid count among the 90 numbered tables — used for money calcs
-    const totalNumbered = numberedIds.length; // 90 — used for the "full amount" money calc
-
-    // Each VIP box replaced 3 original numbered tables (25-27 and 81-83), so for the
-    // table-count stats (not money) it's weighted as 3 slots each — this keeps
-    // open + pending + paid = total (96) internally consistent.
-    const VIP_WEIGHT = 3;
-    ['VIP1','VIP2'].forEach(id=>{
-      const s = statusOfNumbered(id);
-      if(s==='open') open += VIP_WEIGHT;
-      else if(s==='pending') pending += VIP_WEIGHT;
-      else paid += VIP_WEIGHT;
-    });
-    const total = totalNumbered + VIP_WEIGHT*2; // 96
-
-    return {open, pending, paid, total, moneyPaid, totalNumbered};
+    // VIP is bookable but intentionally excluded from all counts and money
+    const total = numberedIds.length; // 90
+    return {open, pending, paid, total};
   }
   function renderStats(){
     const t = computeTotals();
@@ -419,8 +407,8 @@
       <div class="stat"><div class="num">${t.total}</div><div class="lbl">โต๊ะทั้งหมด</div></div>
       <div class="stat"><div class="num">${t.open}</div><div class="lbl">ที่ว่าง</div></div>
     `;
-    const totalMoney = t.moneyPaid * TABLE_PRICE;
-    const potentialMoney = t.totalNumbered * TABLE_PRICE;
+    const totalMoney = t.paid * TABLE_PRICE;
+    const potentialMoney = t.total * TABLE_PRICE;
     document.getElementById('statsAdmin').innerHTML = `
       <div class="stat"><div class="num">${t.total}</div><div class="lbl">โต๊ะทั้งหมด</div></div>
       <div class="stat"><div class="num">${t.open}</div><div class="lbl">ที่ว่าง</div></div>
